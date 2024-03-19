@@ -88,12 +88,14 @@ TEST("class_no_arg_valid") {
 }
 
 TEST("class_one_arg_invalid") {
-  cfg.add_actor_type<test_actor_one_arg, const int&>("test_actor");
+  cfg.add_actor_type<test_actor_one_arg, no_spawn_options, const int&>(
+    "test_actor");
   test_spawn(make_message(), true);
 }
 
 TEST("class_one_arg_valid") {
-  cfg.add_actor_type<test_actor_one_arg, const int&>("test_actor");
+  cfg.add_actor_type<test_actor_one_arg, no_spawn_options, const int&>(
+    "test_actor");
   test_spawn(make_message(42));
 }
 

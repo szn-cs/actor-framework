@@ -112,22 +112,24 @@ public:
 
   /// Allows other nodes to spawn actors of type `T`
   /// dynamically by using `name` as identifier.
+  /// The behavior of `spawn` can be modified by setting `Os`, e.g.,
+  /// to opt-out of the cooperative scheduling.
   /// @experimental
-  template <class T, class... Ts>
+  template <class T, spawn_options Os = no_spawn_options, class... Ts>
   actor_system_config& add_actor_type(std::string name) {
     using handle = infer_handle_from_class_t<T>;
     static_assert(detail::is_complete<type_id<handle>>);
-    return add_actor_factory(std::move(name), make_actor_factory<T, Ts...>());
+    return add_actor_factory(std::move(name), make_actor_factory<T, Os, Ts...>());
   }
 
   /// Allows other nodes to spawn actors implemented by function `f`
   /// dynamically by using `name` as identifier.
   /// @experimental
-  template <class F>
+  template <class F, spawn_options Os = no_spawn_options>
   actor_system_config& add_actor_type(std::string name, F f) {
     using handle = infer_handle_from_fun_t<F>;
     static_assert(detail::is_complete<type_id<handle>>);
-    return add_actor_factory(std::move(name), make_actor_factory(std::move(f)));
+    return add_actor_factory(std::move(name), make_actor_factory<F, Os>(std::move(f)));
   }
 
   /// Loads module `T` with optional template parameters `Ts...`.
